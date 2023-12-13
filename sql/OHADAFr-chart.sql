@@ -3,7 +3,7 @@
 -- From: Gilles Adjallah-Kondo <gmadjallah@protonmail.com>
 -- Mon, 18 Aout 2020
 --
-SET client_encoding = 'UTF-8';
+--SET client_encoding = 'UTF-8';
 --
 INSERT INTO chart (accno, description, charttype, category, gifi_accno, link, contra) VALUES ('1', 'COMPTES DE RESSOURCES DURABLES', 'H', ' ', '', '', '0');
 INSERT INTO chart (accno, description, charttype, category, gifi_accno, link, contra) VALUES ('101', 'CAPITAL SOCIAL', 'H', ' ', 'CA', '', '0');
