@@ -522,10 +522,10 @@ sub process_query {
     # anything else, add to query
     $query .= $_;
 
-    if (/;\s*$/) {
+    #if (/;\s*$/) {
       # strip ;... Oracle doesn't like it
-      $query =~ s/;\s*$//;
-      $query =~ s/\\'/''/g;
+    #  $query =~ s/;\s*$//;
+    #  $query =~ s/\\'/''/g;
 
       $dbh->do($query);
 
@@ -534,7 +534,7 @@ sub process_query {
       }
 
       $query = "";
-    }
+    #}
 
   }
   close FH;
