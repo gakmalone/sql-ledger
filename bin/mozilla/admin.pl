@@ -1302,7 +1302,7 @@ sub dbcreate {
   $form->{stylesheet} = "sql-ledger.css";
   $form->{dateformat} = "mm-dd-yy";
   $form->{numberformat} = "1,000.00";
-  $form->{dboptions} = "set DateStyle to 'POSTGRES, US'";
+  $form->{dboptions} = "set DateStyle to 'POSTGRES, DMY'";
   $form->{dboptions} .= ';set client_encoding to \''.$form->{encoding}."'" if $form->{encoding};
   $form->{vclimit} = "1000";
 
