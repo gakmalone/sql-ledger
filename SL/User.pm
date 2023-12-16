@@ -527,13 +527,13 @@ sub process_query {
     #  $query =~ s/;\s*$//;
     #  $query =~ s/\\'/''/g;
 
-      $dbh->do($query);
+    $dbh->do($query);
 
-      if ($errstr = $DBI::errstr) {
-        $form->info("$filename:$i - $errstr\n");
-      }
+    if ($errstr = $DBI::errstr) {
+      $form->info("$filename:$i - $errstr\n");
+    }
 
-      $query = "";
+    $query = "";
     #}
 
   }
