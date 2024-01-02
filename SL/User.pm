@@ -522,19 +522,19 @@ sub process_query {
     # anything else, add to query
     $query .= $_;
 
-    #if (/;\s*$/) {
+    if (/;\s*$/) {
       # strip ;... Oracle doesn't like it
-    #  $query =~ s/;\s*$//;
-    #  $query =~ s/\\'/''/g;
+      $query =~ s/;\s*$//;
+      $query =~ s/\\'/''/g;
 
-    $dbh->do($query);
+      $dbh->do($query);
 
-    if ($errstr = $DBI::errstr) {
-      $form->info("$filename:$i - $errstr\n");
+      if ($errstr = $DBI::errstr) {
+        $form->info("$filename:$i - $errstr\n");
+      }
+
+      $query = "";
     }
-
-    $query = "";
-    #}
 
   }
   close FH;
