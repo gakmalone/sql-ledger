@@ -136,6 +136,7 @@ $self{texts} = {
   'Send by E-Mail'              => 'Envoyer par e-mail',
   'September'                   => 'Septembre',
   'Services'                    => 'Prestations de services',
+  'Setup'                       => 'Configuration',
   'Ship'                        => 'Expédier',
   'Statement'                   => 'Relevé',
   'Stock Assembly'              => 'Stock de produits',
