@@ -195,21 +195,43 @@ sub search {
   $form->{reportcode} = 'gl';
   $form->{dateformat} = $myconfig{dateformat};
 
+  # departments
   $form->all_departments(\%myconfig);
 
-  # departments
-  if (@{ $form->{all_department} }) {
+  if (@{$form->{all_department}}) {
     $form->{selectdepartment} = "\n";
-    for (@{ $form->{all_department} }) { $form->{selectdepartment} .= qq|$_->{description}--$_->{id}\n| }
+    for (@{$form->{all_department}}) {
+      $form->{selectdepartment} .= qq|$_->{description}--$_->{id}\n|;
+    }
 
     $l_department = 1;
 
     $department = qq|
           <tr>
-          <th align=right>|.$locale->text('Department').qq|</th>
+          <th align=right>| . $locale->text('Department') . qq|</th>
           <td><select name=department>|
-          .$form->select_option($form->{selectdepartment}, $form->{department}, 1)
-          .qq|
+      . $form->select_option($form->{selectdepartment}, $form->{department}, 1) . qq|
+          </select></td>
+        </tr>
+|;
+  }
+
+  # projects
+  $form->all_projects(\%myconfig);
+
+  if (@{$form->{all_project}}) {
+    $form->{selectproject} = "\n";
+    for (@{$form->{all_project}}) {
+      $form->{selectproject} .= qq|$_->{description}--$_->{id}\n|;
+    }
+
+    $l_project = 1;
+
+    $project = qq|
+          <tr>
+          <th align=right>| . $locale->text('Project') . qq|</th>
+          <td><select name=project>|
+      . $form->select_option($form->{selectproject}, $form->{project}, 1) . qq|
           </select></td>
         </tr>
 |;
@@ -256,11 +278,11 @@ sub search {
 |;
   }
 
-  for (qw(transdate reference description debit credit splitledger)) { $form->{"l_$_"} = "checked" }
+  for (qw(transdate reference description debit credit)) { $form->{"l_$_"} = "checked" }
 
-  @checked = qw(l_subtotal l_splitledger);
+  @checked = qw(l_subtotal);
   @input = qw(reference description name vcnumber lineitem notes source memo datefrom dateto month year accnofrom accnoto amountfrom amountto sort direction reportlogin);
-  for (qw(department)) {
+  for (qw|department project|) {
     push @input, $_ if exists $form->{$_};
   }
   %radio = ( interval => { 0 => 0, 1 => 1, 3 => 2, 12 => 3 },
@@ -270,23 +292,137 @@ sub search {
   $checked{X} = "checked";
 
   $i = 1;
-  $includeinreport{id} = { ndx => $i++, sort => id, checkbox => 1, html => qq|<input name="l_id" class=checkbox type=checkbox value=Y $form->{l_id}>|, label => $locale->text('ID') };
-  $includeinreport{transdate} = { ndx => $i++, sort => transdate, checkbox => 1, html => qq|<input name="l_transdate" class=checkbox type=checkbox value=Y $form->{l_transdate}>|, label => $locale->text('Date') };
-  $includeinreport{reference} = { ndx => $i++, sort => reference, checkbox => 1, html => qq|<input name="l_reference" class=checkbox type=checkbox value=Y $form->{l_reference}>|, label => $locale->text('Reference') };
-  $includeinreport{description} = { ndx => $i++, sort => description, checkbox => 1, html => qq|<input name="l_description" class=checkbox type=checkbox value=Y $form->{l_description}>|, label => $locale->text('Description') };
-  $includeinreport{name} = { ndx => $i++, sort => name, checkbox => 1, html => qq|<input name="l_name" class=checkbox type=checkbox value=Y $form->{l_name}>|, label => $locale->text('Company Name') };
-  $includeinreport{vcnumber} = { ndx => $i++, sort => vcnumber, checkbox => 1, html => qq|<input name="l_vcnumber" class=checkbox type=checkbox value=Y $form->{l_vcnumber}>|, label => $locale->text('Company Number') };
-  $includeinreport{address} = { ndx => $i++, checkbox => 1, html => qq|<input name="l_address" class=checkbox type=checkbox value=Y $form->{l_address}>|, label => $locale->text('Address') };
-  $includeinreport{department} = { ndx => $i++, sort => department, checkbox => 1, html => qq|<input name="l_department" class=checkbox type=checkbox value=Y $form->{l_department}>|, label => $locale->text('Department') } if $l_department;
-  $includeinreport{notes} = { ndx => $i++, checkbox => 1, html => qq|<input name="l_notes" class=checkbox type=checkbox value=Y $form->{l_notes}>|, label => $locale->text('Notes') };
-  $includeinreport{debit} = { ndx => $i++, checkbox => 1, html => qq|<input name="l_debit" class=checkbox type=checkbox value=Y $form->{l_debit}>|, label => $locale->text('Debit') };
-  $includeinreport{credit} = { ndx => $i++, checkbox => 1, html => qq|<input name="l_credit" class=checkbox type=checkbox value=Y $form->{l_credit}>|, label => $locale->text('Credit') };
-  $includeinreport{source} = { ndx => $i++, sort => source, checkbox => 1, html => qq|<input name="l_source" class=checkbox type=checkbox value=Y $form->{l_source}>|, label => $locale->text('Source') };
-  $includeinreport{memo} = { ndx => $i++, sort => memo, checkbox => 1, html => qq|<input name="l_memo" class=checkbox type=checkbox value=Y $form->{l_memo}>|, label => $locale->text('Memo') };
-  $includeinreport{lineitem} = { ndx => $i++, sort => lineitem, checkbox => 1, html => qq|<input name="l_lineitem" class=checkbox type=checkbox value=Y $form->{l_lineitem}>|, label => $locale->text('Line Item') };
-  $includeinreport{accno} = { ndx => $i++, sort => accno, checkbox => 1, html => qq|<input name="l_accno" class=checkbox type=checkbox value=Y $form->{l_accno}>|, label => $locale->text('Account') };
-  $includeinreport{gifi_accno} = { ndx => $i++, sort => gifi_accno, checkbox => 1, html => qq|<input name="l_gifi_accno" class=checkbox type=checkbox value=Y $form->{l_gifi_accno}>|, label => $locale->text('GIFI') };
-  $includeinreport{contra} = { ndx => $i++, checkbox => 1, html => qq|<input name="l_contra" class=checkbox type=checkbox value=Y $form->{l_contra}>|, label => $locale->text('Contra') };
+  $includeinreport{id} = {
+    ndx      => $i++,
+    sort    => 'id',
+    checkbox => 1,
+    html     => qq|<input name="l_id" class=checkbox type=checkbox value=Y $form->{l_id}>|,
+    label    => $locale->text('ID')
+  };
+  $includeinreport{transdate} = {
+    ndx      => $i++,
+    sort    => 'transdate',
+    checkbox => 1,
+    html     =>
+      qq|<input name="l_transdate" class=checkbox type=checkbox value=Y $form->{l_transdate}>|,
+    label => $locale->text('Date')
+  };
+  $includeinreport{reference} = {
+    ndx      => $i++,
+    sort    => 'reference',
+    checkbox => 1,
+    html     =>
+      qq|<input name="l_reference" class=checkbox type=checkbox value=Y $form->{l_reference}>|,
+    label => $locale->text('Reference')
+  };
+  $includeinreport{description} = {
+    ndx      => $i++,
+    sort    => 'description',
+    checkbox => 1,
+    html     =>
+      qq|<input name="l_description" class=checkbox type=checkbox value=Y $form->{l_description}>|,
+    label => $locale->text('Description')
+  };
+  $includeinreport{name} = {
+    ndx      => $i++,
+    sort    => 'name',
+    checkbox => 1,
+    html     => qq|<input name="l_name" class=checkbox type=checkbox value=Y $form->{l_name}>|,
+    label    => $locale->text('Company Name')
+  };
+  $includeinreport{vcnumber} = {
+    ndx      => $i++,
+    sort    => 'vcnumber',
+    checkbox => 1,
+    html  => qq|<input name="l_vcnumber" class=checkbox type=checkbox value=Y $form->{l_vcnumber}>|,
+    label => $locale->text('Company Number')
+  };
+  $includeinreport{address} = {
+    ndx      => $i++,
+    checkbox => 1,
+    html  => qq|<input name="l_address" class=checkbox type=checkbox value=Y $form->{l_address}>|,
+    label => $locale->text('Address')
+  };
+  if ($l_department) {
+    $includeinreport{department} = {
+      ndx      => $i++,
+      sort     => 'department',
+      checkbox => 1,
+      html     =>
+        qq|<input name="l_department" class=checkbox type=checkbox value=Y $form->{l_department}>|,
+      label => $locale->text('Department')
+    };
+  }
+  if ($l_project) {
+    $includeinreport{project} = {
+      ndx      => $i++,
+      sort     => 'project',
+      checkbox => 1,
+      html     =>
+        qq|<input name="l_project" class=checkbox type=checkbox value=Y $form->{l_project}>|,
+      label => $locale->text('Project')
+    };
+  }
+  $includeinreport{notes} = {
+    ndx      => $i++,
+    checkbox => 1,
+    html     => qq|<input name="l_notes" class=checkbox type=checkbox value=Y $form->{l_notes}>|,
+    label    => $locale->text('Notes')
+  };
+  $includeinreport{debit} = {
+    ndx      => $i++,
+    checkbox => 1,
+    html     => qq|<input name="l_debit" class=checkbox type=checkbox value=Y $form->{l_debit}>|,
+    label    => $locale->text('Debit')
+  };
+  $includeinreport{credit} = {
+    ndx      => $i++,
+    checkbox => 1,
+    html     => qq|<input name="l_credit" class=checkbox type=checkbox value=Y $form->{l_credit}>|,
+    label    => $locale->text('Credit')
+  };
+  $includeinreport{source} = {
+    ndx      => $i++,
+    sort    => 'source',
+    checkbox => 1,
+    html     => qq|<input name="l_source" class=checkbox type=checkbox value=Y $form->{l_source}>|,
+    label    => $locale->text('Source')
+  };
+  $includeinreport{memo} = {
+    ndx      => $i++,
+    sort    => 'memo',
+    checkbox => 1,
+    html     => qq|<input name="l_memo" class=checkbox type=checkbox value=Y $form->{l_memo}>|,
+    label    => $locale->text('Memo')
+  };
+  $includeinreport{lineitem} = {
+    ndx      => $i++,
+    sort    => 'lineitem',
+    checkbox => 1,
+    html  => qq|<input name="l_lineitem" class=checkbox type=checkbox value=Y $form->{l_lineitem}>|,
+    label => $locale->text('Line Item')
+  };
+  $includeinreport{accno} = {
+    ndx      => $i++,
+    sort    => 'accno',
+    checkbox => 1,
+    html     => qq|<input name="l_accno" class=checkbox type=checkbox value=Y $form->{l_accno}>|,
+    label    => $locale->text('Account')
+  };
+  $includeinreport{gifi_accno} = {
+    ndx      => $i++,
+    sort    => 'gifi_accno',
+    checkbox => 1,
+    html     =>
+      qq|<input name="l_gifi_accno" class=checkbox type=checkbox value=Y $form->{l_gifi_accno}>|,
+    label => $locale->text('GIFI')
+  };
+  $includeinreport{contra} = {
+    ndx      => $i++,
+    checkbox => 1,
+    html     => qq|<input name="l_contra" class=checkbox type=checkbox value=Y $form->{l_contra}>|,
+    label    => $locale->text('Contra')
+  };
 
   @f = ();
   $form->{flds} = "";
@@ -340,6 +476,8 @@ sub search {
         </tr>
 
               $department
+
+              $project
 
         <tr>
           <th align=right>|.$locale->text('Line Item').qq|</th>
@@ -467,13 +605,17 @@ sub transactions {
   GL->transactions(\%myconfig, \%$form);
 
   $href = "$form->{script}?action=transactions";
-  for (qw(direction oldsort path login month year interval reportlogin l_splitledger)) { $href .= "&$_=$form->{$_}" }
-  for (qw(report flds)) { $href .= "&$_=".$form->escape($form->{$_}) }
+  for (qw(direction oldsort path login month year interval reportlogin l_splitledger)) {
+    $href .= "&$_=$form->{$_}" if $form->{$_};
+  }
+  for (qw(report flds)) { $href .= "&$_=" . $form->escape($form->{$_}) }
 
   $form->sort_order();
 
   $callback = "$form->{script}?action=transactions";
-  for (qw(direction oldsort path login month year interval reportlogin l_splitledger)) { $callback .= "&$_=$form->{$_}" }
+  for (qw(direction oldsort path login month year interval reportlogin l_splitledger)) {
+    $callback .= "&$_=$form->{$_}" if $form->{$_};
+  }
   for (qw(report flds)) { $callback .= "&$_=".$form->escape($form->{$_}) }
 
   %acctype = ( 'A' => $locale->text('Asset'),
@@ -531,6 +673,13 @@ sub transactions {
     ($department) = split /--/, $form->{department};
     $option .= "\n<br>" if $option;
     $option .= $locale->text('Department')." : $department";
+  }
+  if ($form->{project}) {
+    $href .= "&project=".$form->escape($form->{project});
+    $callback .= "&project=".$form->escape($form->{project},1);
+    ($project) = split /--/, $form->{project};
+    $option .= "\n<br>" if $option;
+    $option .= $locale->text('Project')." : $project";
   }
   if ($form->{notes}) {
     $href .= "&notes=".$form->escape($form->{notes});
@@ -625,20 +774,26 @@ sub transactions {
   $columns{debit} = 1;
   $columns{credit} = 1;
 
-
   if ($form->{link} =~ /_paid/) {
     push @columns, "cleared";
     $column_data{cleared} = $locale->text('R');
     $form->{l_cleared} = "Y";
   }
-  @columns = grep !/department/, @columns if $form->{department};
 
   if ($form->{l_splitledger}) {
     unless ($form->{column_index}) {
       push @columns, "balance";
       $form->{l_balance} = "Y";
-      $column_data{balance} = $locale->text('Balance');
     }
+    $column_data{balance} = $locale->text('Balance');
+  }
+
+  for (qw|department project|) {
+    delete $form->{"l_$_"} if $form->{$_};
+  }
+
+  for (qw|department project|) {
+    delete $form->{"l_$_"} if $form->{$_};
   }
 
   $i = 0;
@@ -726,6 +881,22 @@ sub transactions {
   $href .= "&category=$form->{category}";
   $callback .= "&category=$form->{category}";
 
+  # add sort to callback
+  $form->{callback} = "$callback&sort=$form->{sort}";
+  $callback = $form->escape($form->{callback});
+
+  if ($form->{action} eq 'spreadsheet') {
+    require "$form->{path}/glss.pl";
+
+    # reverse href
+    $direction = ($form->{direction} eq 'ASC') ? "ASC" : "DESC";
+    $form->sort_order();
+    $href =~ s/direction=$form->{direction}/direction=$direction/;
+
+    &transactions_spreadsheet($option, \@column_index, \%column_data, $href);
+    exit;
+  }
+
   $form->helpref("list_gl_transactions", $myconfig{countrycode});
 
   $form->header;
@@ -790,10 +961,6 @@ sub transactions {
         </tr>
 |;
 
-
-  # add sort to callback
-  $form->{callback} = "$callback&sort=$form->{sort}";
-  $callback = $form->escape($form->{callback});
 
   $cml = 1;
   # initial item for subtotals
@@ -882,7 +1049,7 @@ sub transactions {
     $ref->{reference} ||= "&nbsp;";
     $column_data{reference} = "<td><a href=$ref->{module}.pl?action=edit&id=$ref->{id}&path=$form->{path}&login=$form->{login}&callback=$callback>$ref->{reference}</td>";
 
-    for (qw(department name vcnumber address)) { $column_data{$_} = "<td>$ref->{$_}&nbsp;</td>" }
+    for (qw(department project name vcnumber address)) { $column_data{$_} = "<td>$ref->{$_}&nbsp;</td>" }
 
     for (qw(lineitem description source memo notes)) {
       $ref->{$_} =~ s/\r?\n/<br>/g;
@@ -946,15 +1113,18 @@ sub transactions {
 |;
   };
 
-  %button = ('General Ledger--Add Transaction' => { ndx => 1, key => 'G', value => $locale->text('GL Transaction') },
-  'AR--Add Transaction' => { ndx => 2, key => 'R', value => $locale->text('AR Transaction') },
-  'AR--Sales Invoice' => { ndx => 3, key => 'I', value => $locale->text('Sales Invoice ') },
-  'AR--Credit Invoice' => { ndx => 4, key => 'C', value => $locale->text('Credit Invoice ') },
-  'AP--Add Transaction' => { ndx => 5, key => 'P', value => $locale->text('AP Transaction') },
-  'AP--Vendor Invoice' => { ndx => 6, key => 'V', value => $locale->text('Vendor Invoice ') },
-  'AP--Vendor Invoice' => { ndx => 7, key => 'D', value => $locale->text('Debit Invoice ') },
-  'Save Report' => { ndx => 8, key => 'S', value => $locale->text('Save Report') }
-            );
+  %button = (
+    'General Ledger--Add Transaction' =>
+      {ndx => 1, key => 'G', value => $locale->text('GL Transaction')},
+    'AR--Add Transaction' => {ndx => 2, key => 'R', value => $locale->text('AR Transaction')},
+    'AR--Sales Invoice'   => {ndx => 3, key => 'I', value => $locale->text('Sales Invoice ')},
+    'AR--Credit Invoice'  => {ndx => 4, key => 'C', value => $locale->text('Credit Invoice ')},
+    'AP--Add Transaction' => {ndx => 5, key => 'P', value => $locale->text('AP Transaction')},
+    'AP--Vendor Invoice'  => {ndx => 6, key => 'V', value => $locale->text('Vendor Invoice ')},
+    'AP--Vendor Invoice'  => {ndx => 7, key => 'D', value => $locale->text('Debit Invoice ')},
+    'Save Report'         => {ndx => 8, key => 'S', value => $locale->text('Save Report')},
+    'Spreadsheet'         => {ndx => 9, key => 'X', value => $locale->text('Spreadsheet')},
+  );
 
   if (!$form->{admin}) {
     delete $button{'Save Report'} unless $form->{savereport};
@@ -999,7 +1169,12 @@ sub transactions {
   if ($form->{year} && $form->{month}) {
     for (qw(datefrom dateto)) { delete $form->{$_} }
   }
-  $form->hide_form(qw(department reference description name vcnumber lineitem notes source memo datefrom dateto month year accnofrom accnoto amountfrom amountto interval category l_subtotal l_splitledger));
+  $form->hide_form(
+    'accnofrom', 'accnoto',    'amountfrom',  'amountto', 'category',      'datefrom',
+    'dateto',    'department', 'description', 'interval', 'l_splitledger', 'l_subtotal',
+    'lineitem',  'memo',       'month',       'name',     'notes',         'project',
+    'reference', 'source',     'vcnumber',    'year',
+  );
 
   $form->hide_form(qw(callback path login report reportcode reportlogin column_index flds sort direction));
 
