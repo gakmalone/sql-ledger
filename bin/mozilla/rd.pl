@@ -25,85 +25,173 @@ sub formnames {
     ar_transaction => {
       script => 'ar',
       db     => 'ar',
+      number => 'invnumber',
       var    => 'type=transaction',
       label  => $locale->text('AR Transaction')
     },
-    ap_invoice =>
-      {script => 'ir', db => 'ap', var => 'type=invoice', label => $locale->text('Vendor Invoice')},
+    ap_invoice => {
+      script => 'ir',
+      db     => 'ap',
+      number => 'invnumber',
+      var    => 'type=invoice',
+      label  => $locale->text('Vendor Invoice')
+    },
     ap_transaction => {
       script => 'ap',
       db     => 'ap',
+      number => 'invnumber',
       var    => 'type=transaction',
       label  => $locale->text('AP Transaction')
     },
-    ar_invoice =>
-      {script => 'is', db => 'ar', var => 'type=invoice', label => $locale->text('Sales Invoice')},
-    assembly =>
-      {script => 'ic', db => 'parts', var => 'item=assembly', label => $locale->text('Assembly')},
+    ar_invoice => {
+      script => 'is',
+      db     => 'ar',
+      number => 'invnumber',
+      var    => 'type=invoice',
+      label  => $locale->text('Sales Invoice')
+    },
+    assembly => {
+      script => 'ic',
+      db     => 'parts',
+      number => 'partnumber',
+      var    => 'item=assembly',
+      label  => $locale->text('Assembly')
+    },
     credit_invoice => {
       script => 'is',
       db     => 'ar',
+      number => 'invnumber',
       var    => 'type=credit_invoice',
       label  => $locale->text('Credit Invoice')
     },
     credit_note => {
       script => 'ar',
       db     => 'ar',
+      number => 'invnumber',
       var    => 'type=credit_note',
       label  => $locale->text('Credit Note')
     },
-    customer =>
-      {script => 'ct', db => 'customer', var => 'db=customer', label => $locale->text('Customer')},
+    customer => {
+      script => 'ct',
+      db     => 'customer',
+      number => 'customernumber',
+      var    => 'db=customer',
+      label  => $locale->text('Customer')
+    },
     debit_invoice => {
       script => 'ir',
       db     => 'ap',
+      number => 'invnumber',
       var    => 'type=debit_invoice',
       label  => $locale->text('Debit Invoice')
     },
-    debit_note =>
-      {script => 'ap', db => 'ap', var => 'type=debit_note', label => $locale->text('Debit Note')},
-    employee =>
-      {script => 'hr', db => 'employee', var => 'db=employee', label => $locale->text('Employee')},
-    gl    => {script => 'gl', db => 'gl',      label => $locale->text('GL Transaction')},
-    job   => {script => 'pe', db => 'project', var   => 'type=job', label => $locale->text('Job')},
-    labor => {script => 'ic', db => 'parts', var => 'item=labor', label => $locale->text('Labor')},
-    part  => {script => 'ic', db => 'parts', var => 'item=part',  label => $locale->text('Part')},
-    payslip =>
-      {script => 'hr', db => 'ap', var => 'db=payroll', label => $locale->text('Pay Slip')},
-    project =>
-      {script => 'pe', db => 'oe', var => 'type=project', label => $locale->text('Project')},
+    debit_note => {
+      script => 'ap',
+      db     => 'ap',
+      number => 'invnumber',
+      var    => 'type=debit_note',
+      label  => $locale->text('Debit Note')
+    },
+    employee => {
+      script => 'hr',
+      db     => 'employee',
+      number => 'employeenumber',
+      var    => 'db=employee',
+      label  => $locale->text('Employee')
+    },
+    gl =>
+      {script => 'gl', db => 'gl', number => 'id', label => $locale->text('GL Transaction')},
+    job => {
+      script => 'pe',
+      db     => 'project',
+      number => 'projectnumber',
+      var    => 'type=job',
+      label  => $locale->text('Job')
+    },
+    labor => {
+      script => 'ic',
+      db     => 'parts',
+      number => 'partnumber',
+      var    => 'item=labor',
+      label  => $locale->text('Labor')
+    },
+    part => {
+      script => 'ic',
+      db     => 'parts',
+      number => 'partnumber',
+      var    => 'item=part',
+      label  => $locale->text('Part')
+    },
+    payslip => {
+      script => 'hr',
+      db     => 'ap',
+      number => 'invnumber',
+      var    => 'db=payroll',
+      label  => $locale->text('Pay Slip')
+    },
+    project => {
+      script => 'pe',
+      db     => 'project',
+      number => 'projectnumber',
+      var    => 'type=project',
+      label  => $locale->text('Project')
+    },
     purchase_order => {
       script => 'oe',
       db     => 'oe',
+      number => 'ordnumber',
       var    => 'type=purchase_order',
       label  => $locale->text('Purchase Order')
     },
-    request_quotation =>
-      {script => 'oe', db => 'oe', var => 'type=request_quotation', label => $locale->text('RFQ')},
+    request_quotation => {
+      script => 'oe',
+      db     => 'oe',
+      number => 'quonumber',
+      var    => 'type=request_quotation',
+      label  => $locale->text('RFQ')
+    },
     sales_order => {
       script => 'oe',
       db     => 'oe',
+      number => 'ordnumber',
       var    => 'type=sales_order',
       label  => $locale->text('Sales Order')
     },
     sales_quotation => {
       script => 'oe',
       db     => 'oe',
+      number => 'quonumber',
       var    => 'type=sales_quotation',
       label  => $locale->text('Quotation')
     },
-    service =>
-      {script => 'ic', db => 'parts', var => 'item=service', label => $locale->text('Service')},
+    service => {
+      script => 'ic',
+      db     => 'parts',
+      number => 'partnumber',
+      var    => 'item=service',
+      label  => $locale->text('Service')
+    },
     storescard => {
       script => 'jc',
       db     => 'jcitems',
+      number => 'id',
       var    => 'type=storescard',
       label  => $locale->text('Stores Card')
     },
-    timecard =>
-      {script => 'jc', db => 'jcitems', var => 'type=timecard', label => $locale->text('Timecard')},
-    vendor =>
-      {script => 'ct', db => 'vendor', var => 'db=vendor', label => $locale->text('Vendor')},
+    timecard => {
+      script => 'jc',
+      db     => 'jcitems',
+      number => 'id',
+      var    => 'type=timecard',
+      label  => $locale->text('Timecard')
+    },
+    vendor => {
+      script => 'ct',
+      db     => 'vendor',
+      number => 'vendornumber',
+      var    => 'db=vendor',
+      label  => $locale->text('Vendor')
+    },
   );
 
   return %module;
@@ -117,6 +205,8 @@ sub upload {
     &display_documents;
     exit;
   }
+
+  $form->load_defaults(\%myconfig, undef, ['max_upload_size']);
 
   $form->{title} = $locale->text('Upload Document');
 
@@ -182,7 +272,11 @@ sub upload {
 
   print qq|
 <input name=action class=submit type=submit value="|.$locale->text('Continue').qq|" accesskey="C" title="|.$locale->text('Continue').qq| [C]">
-</form>
+</form>|;
+
+  &check_upload_size if $form->{max_upload_size};
+
+  print qq|
 
 </body>
 </html>
@@ -278,7 +372,31 @@ Content-Disposition: inline; filename=$form->{filename};\n\n|;
 }
 
 
+sub download_document {
+  if ($form->{id} and my $data = $form->get_reference(\%myconfig)) {
+
+    $form->{contenttype} ||= 'text/plain';
+    my $disposition = $form->{contenttype} =~ /^image/ ? 'inline' : 'attachment';
+
+    print qq|Content-Type: $form->{contenttype}
+Content-Disposition: $disposition; filename*=UTF-8''$form->{filename};\n\n|;
+
+    open(OUT, ">-") or $form->error("STDOUT : $!");
+
+    binmode(OUT);
+
+    print OUT $data;
+    close(OUT);
+
+  } else {
+    $form->error($locale->text('No data!'));
+  }
+}
+
+
 sub search_documents {
+
+  RD->prepare_search(\%myconfig, $form);
 
   $form->{title} = $locale->text('Reference Documents');
 
@@ -289,7 +407,14 @@ sub search_documents {
   %m = &formnames;
   $selectformname = "\n";
   for (sort { $m{$a}->{label} cmp $m{$b}->{label} } keys %m) {
-    $selectformname .= qq|$m{$_}{label}--$_\n|;
+    if ($form->{has_formname}{$_}) {
+      $selectformname .= qq|$m{$_}{label}--$_\n|;
+    }
+  }
+
+  $selectfolder = "\n";
+  for my $ref ($form->{all_folder}->@*) {
+    $selectfolder .= "$ref->{folder}\n" if $ref->{folder};
   }
 
   $form->header;
@@ -314,17 +439,26 @@ sub search_documents {
         </tr>
         <tr>
           <th align=right nowrap>|.$locale->text('Folder').qq|</th>
-          <td><input name=folder size=40></td>
+          <td><select name=folder>|
+          .$form->select_option($selectfolder).qq|</td>
         </tr>
         <tr>
-          <th align=right nowrap>|.$locale->text('Form').qq|</th>
+          <th align=right nowrap>|.$locale->text('Filename').qq|</th>
+          <td><input name=filename size=40></td>
+        </tr>
+        <tr>
+          <th align="right" nowrap>|.$locale->text('Confidential').qq|</th>
+          <td><input name="confidential" type="checkbox" value="1"></td>
+        </tr>
+        <tr>
+          <th align=right nowrap>|.$locale->text('Attached to').qq|</th>
           <td><select name=formname>|
           .$form->select_option($selectformname, undef, 1).qq|
           </td>
         </tr>
         <tr>
-          <th align=right nowrap>|.$locale->text('Filename').qq|</th>
-          <td><input name=filename size=40></td>
+          <th align="right" nowrap>|.$locale->text('Number').qq|</th>
+          <td><input name="document_number" size="40"></td>
         </tr>
       </table>
     </td>
@@ -356,7 +490,9 @@ sub search_documents {
 
 sub list_documents {
 
-  RD->all_documents(\%myconfig, \%$form);
+  %m = &formnames;
+
+  RD->all_documents(\%myconfig, $form, \%m);
 
   $href = "$form->{script}?action=list_documents";
   for (qw(direction oldsort path login)) { $href .= qq|&$_=$form->{$_}| }
@@ -366,7 +502,10 @@ sub list_documents {
   $callback = "$form->{script}?action=list_documents";
   for (qw(direction oldsort path login)) { $callback .= qq|&$_=$form->{$_}| }
 
-  @columns = qw(description folder filename confidential formname);
+  @columns
+    = $form->{referenceurl}
+    ? qw|description confidential formname document_number|
+    : qw|filename description folder confidential formname document_number|;
 
   if ($form->{description}) {
     $option .= "\n<br>" if ($option);
@@ -393,22 +532,41 @@ sub list_documents {
     $href .= "&formname=".$form->escape($form->{formname});
     $callback .= "&formname=$form->{formname}";
   }
+  if ($form->{confidential}) {
+    $option .= "\n<br>" if ($option);
+    $option .= $locale->text('Confidential');
+    $href .= "&confidential=1";
+    $callback .= "&confidential=1";
+  }
+  if ($form->{document_number}) {
+    $option .= "\n<br>" if ($option);
+    $option .= $locale->text('Attached to')." : $form->{document_number}";
+    $href .= "&document_number=".$form->escape($form->{document_number});
+    $callback .= "&document_number=$form->{document_number}";
+  }
 
   %module = &formnames;
 
   $column_data{delete} = qq|<th class=listheading width=1%><input name="allbox_delete" type=checkbox class=checkbox value="1" onChange="CheckAll();"></th>|;
   $column_data{confidential} = qq|<th class=listheading>|.$locale->text('C').qq|</th>|;
   $column_data{description} = qq|<th><a class=listheading href=$href&sort=description>|.$locale->text('Description').qq|</a></th>|;
+  $column_data{document_number} = qq|<th><a class=listheading href=$href&sort=document_number>|.$locale->text('Number').qq|</a></th>|;
   $column_data{folder} = qq|<th><a class=listheading href=$href&sort=folder>|.$locale->text('Folder').qq|</a></th>|;
   $column_data{formname} = qq|<th><a class=listheading href=$href&sort=formname>|.$locale->text('Attached to').qq|</a></th>|;
   $column_data{filename} = qq|<th><a class=listheading href=$href&sort=filename>|.$locale->text('Filename').qq|</a></th>|;
 
-  $form->{title} = $locale->text('Reference Documents');
+  $form->{title} = $locale->text('Reference Documents') . " / $form->{company}";
 
   $form->{callback} = $callback;
   $callback = $form->escape($callback,1);
 
   @column_index = $form->sort_columns(@columns);
+
+  if ($form->{action} eq 'spreadsheet') {
+    require "$form->{path}/rdss.pl";
+    &documents_spreadsheet($option, \@column_index, \%column_data, \%module);
+    exit;
+  }
 
   unshift @column_index, "delete";
 
@@ -443,10 +601,17 @@ sub list_documents {
         </tr>
 |;
 
-  $idlabel = $locale->text('ID');
-
   $i = 0;
+  my ($sameid, $skipid);
   foreach $ref (@{ $form->{all_documents} }) {
+
+    if (($ref->{archive_id} || '0') eq $sameid) {
+      $ref->{filename} = '&#8627';
+      $skipid = 1;
+    } else {
+      $sameid = $ref->{archive_id};
+      $skipid = 0;
+    }
 
     $i++;
 
@@ -457,21 +622,24 @@ sub list_documents {
       if ($module{$ref->{formname}}{script}) {
         $href="$module{$ref->{formname}}{script}.pl?action=edit&id=$ref->{trans_id}&login=$form->{login}&path=$form->{path}";
         $href .= "&$module{$ref->{formname}}{var}" if $module{$ref->{formname}}{var};
-        $column_data{formname} = qq|<td><a href="$href" target=_new>$module{$ref->{formname}}{label}</a> - $idlabel $ref->{trans_id}</td>|;
+        $column_data{document_number} = qq|<td><a href="$href" target="_blank">$ref->{document_number}</a></td>|;
       }
     }
     if ($ref->{filename}) {
-      $column_data{filename} = qq|<td><a href=$form->{script}?action=display_documents&login=$form->{login}&path=$form->{path}&id=$ref->{archive_id} target=popup>$ref->{filename}</a></td>|;
+      $column_data{filename} = qq|<td><a href="$form->{script}?action=download_document&login=$form->{login}&path=$form->{path}&id=$ref->{archive_id}">$ref->{filename}</a></td>|;
     }
     $column_data{description} = qq|<td><a href=$form->{script}?action=edit&login=$form->{login}&path=$form->{path}&id=$ref->{id}&callback=$callback>$ref->{description}</a></td>|;
 
     $column_data{delete} = qq|<td><input name="id_$i" class=checkbox type=checkbox value=$ref->{id}></td>|;
 
     if ($ref->{login}) {
-      $column_data{confidential} = qq|<td>x</td>|;
+      $column_data{confidential} = qq|<td align="center">x</td>|;
     }
 
-    $j++; $j %= 2;
+    unless ($skipid) {
+      $j++;
+      $j %= 2;
+    }
 
     print "
         <tr class=listrow$j>
@@ -496,9 +664,11 @@ sub list_documents {
 
   $form->{rowcount} = $i;
 
-  %button = ( 'Add Document' => { ndx => 2, key => 'A', value => $locale->text('Add Document') },
-              'Delete Documents' => { ndx => 3, key => 'D', value => $locale->text('Delete Documents') },
-            );
+  %button = (
+    'Add Document'     => {ndx => 2, key => 'A', value => $locale->text('Add Document')},
+    'Delete Documents' => {ndx => 3, key => 'D', value => $locale->text('Delete Documents')},
+    'Spreadsheet'      => {ndx => 4, key => 'X', value => $locale->text('Spreadsheet')},
+  );
 
   $form->print_button(\%button);
 
@@ -681,8 +851,8 @@ sub attach {
           </td>
         </tr>
         <tr>
-          <th align="right">|.$locale->text('ID').qq|</th>
-          <td><input name=trans_id>
+          <th align="right">|.$locale->text('Number').qq|</th>
+          <td><input name="document_number">
           </td>
         </tr>
       </table>
@@ -718,12 +888,15 @@ sub do_attach {
 
   %m = &formnames;
   ($formname, $form->{formname}) = split /--/, $form->{formname};
-  $form->{db} = $m{$form->{formname}}{db};
+  $form->{db}           = $m{$form->{formname}}{db};
+  $form->{number_field} = $m{$form->{formname}}{number};
 
-  $form->redirect($locale->text('Document attached!')) if RD->attach_document(\%myconfig, \%$form);
-
-  $form->error($locale->text($formname).qq| |.$locale->text('ID').qq| $form->{trans_id} |.$locale->text('does not exist!'));
-
+  if (RD->attach_document(\%myconfig, $form)) {
+    $form->redirect($locale->text('Document attached!'));
+  } else {
+    $form->error(
+      $locale->text($formname) . qq| $form->{document_number} | . $locale->text('does not exist!'));
+  }
 }
 
 
@@ -977,6 +1150,15 @@ sub delete_files {
 sub continue { &{ $form->{nextsub} } };
 
 
+sub spreadsheet {
+  $form->parse_callback(\%myconfig, iso_date => 1);
+
+  my $action = $form->{action};
+  $form->{action} = 'spreadsheet';
+  &$action;
+}
+
+
 =encoding utf8
 
 =head1 NAME
@@ -1022,6 +1204,8 @@ Calls C<< &{ $form->{nextsub} } >>.
 
 =head2 display_documents
 
+=head2 download_document
+
 =head2 do_attach
 
 =head2 edit
@@ -1033,6 +1217,8 @@ Calls C<< &{ $form->{nextsub} } >>.
 =head2 save
 
 =head2 search_documents
+
+=head2 spreadsheet
 
 =head2 upload
 

@@ -1612,6 +1612,10 @@ sub save_defaults {
   $form->{fxgainloss_accno} = $form->{fxgainloss};
   $form->{cashovershort_accno} = $form->{cashovershort};
 
+  for (qw|max_upload_size precision annualinterest latepaymentfee restockingcharge roundchange|) {
+    $form->{$_} *= 1;
+  }
+
   # connect to database
   my $dbh = $form->dbconnect_noauto($myconfig);
 
@@ -2351,6 +2355,10 @@ sub company_defaults {
   ($form->{username}) = $dbh->selectrow_array($query);
 
   $form->{username} ||= 'admin' if $login eq 'admin';
+
+  $query = qq|SELECT pg_size_pretty(pg_database_size('$myconfig->{dbname}'))|;
+
+  ($form->{dbsize}) = $dbh->selectrow_array($query);
 
   $dbh->disconnect;
 

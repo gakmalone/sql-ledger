@@ -1,7 +1,31 @@
 Revision history for SQL-Ledger, starting with version 3.0.0
 
+3.2.12.44 2024-05-28
+  - option to display contact information in transactions report
+
+3.2.12.43 2024-05-21
+  - improved icons for links, uploads and downloads
+  - document upload checks for identical files in the archive
+  - document download distinguishes between images and other files
+  - documents report groups identical files
+  - status of Perl modules only visible for admins and on admin screen
+
+3.2.12.42 2024-05-11
+  - add reference documents using drag and drop
+  - directly edit details of reference documents
+  - set maximum upload size in system settings
+  - document report shows numbers of referenced transactions
+  - search reference documents using transaction number or confidential flag
+  - attach documents to transaction using its number
+  - spreadsheets for reference documents
+  - spreadsheets for individual accounts
+  - size of database is displayed in admin and version screen
+  - version screen shows missing Perl modules
+  - updated Turkish (UTF-8) translation
+    contributed my Mufit Eribol
+
 3.2.12.41 2024-04-28
-  - option to show project number in GL reports
+  - option to show project number in general ledger reports
   - spreadsheets for general ledger reports
   - attachments for payroll transactions corrected
   - Docker files for AlmaLinux 9
@@ -11,7 +35,6 @@ Revision history for SQL-Ledger, starting with version 3.0.0
   - improved Spreadsheet generation with check for correct sheet names
   - additional template variables for project number and description
   - error in migration from DWS to Tekki version corrected
-  - Turkish (UTF-8) translation updated
 
 3.2.12.39 2023-12-25
   - encrypted backups
@@ -44,7 +67,7 @@ Revision history for SQL-Ledger, starting with version 3.0.0
   - spreadsheet for tax reports
   - improved accesskeys to select items in lists
   - regular expressions in template if statements
-  - don't use white character when printing out a page
+  - don't use white characters when printing out a page
 
 3.2.11.33 2022-09-16
   - access token for API calls

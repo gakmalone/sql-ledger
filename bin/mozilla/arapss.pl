@@ -11,8 +11,7 @@
 #
 #======================================================================
 
-$form->load_module(['Excel::Writer::XLSX', 'SL::Spreadsheet'],
-  $locale->text('Module not installed:'));
+use SL::Spreadsheet;
 
 sub transactions_spreadsheet {
   my ($report_options, $column_index, $header) = @_;
@@ -21,7 +20,10 @@ sub transactions_spreadsheet {
     columns => {
       accno          => 'text',
       address        => 'text',
+      address1       => 'text',
+      address2       => 'text',
       city           => 'text',
+      contacttitle   => 'text',
       country        => 'text',
       curr           => 'text',
       customernumber => 'text',
@@ -30,19 +32,26 @@ sub transactions_spreadsheet {
       department     => 'text',
       description    => 'text',
       duedate        => 'date',
+      email          => 'email',
       employee       => 'text',
+      firstname      => 'text',
       id             => 'number',
       invnumber      => 'link',
+      lastname       => 'text',
       memo           => 'text',
+      mobile         => 'text',
       name           => 'link',
       notes          => 'text',
+      occupation     => 'text',
       ordnumber      => 'text',
       paid           => 'nonzero_decimal',
       paymentaccount => 'text',
       paymentdiff    => 'number',
       paymentmethod  => 'text',
+      phone          => 'text',
       ponumber       => 'text',
       projectnumber  => 'text',
+      salutation     => 'text',
       shippingpoint  => 'text',
       shipvia        => 'text',
       source         => 'text',

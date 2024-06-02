@@ -328,7 +328,7 @@ sub form_header {
       $exchangerate .= qq|
               <th align=right nowrap>|.$locale->text('Exchange Rate').qq| <font color=red>*</font></th>
               <td nowrap><input name=exchangerate class="inputright" size=10 value=$form->{exchangerate}>
-                  <a href=am.pl?action=list_exchangerates&transdatefrom=$fdm&transdateto=$ldm&currency=$form->{currency}&login=$form->{login}&path=$form->{path} target=_blank>&#8663;</a></td>|;
+                  <a href=am.pl?action=list_exchangerates&transdatefrom=$fdm&transdateto=$ldm&currency=$form->{currency}&login=$form->{login}&path=$form->{path} target=_blank>&#9701;</a></td>|;
     }
     $exchangerate .= qq|</tr></table></td></tr>
 |;
@@ -337,7 +337,7 @@ sub form_header {
   $vcname = $locale->text('Vendor');
   $vcnumber = $locale->text('Vendor Number');
 
-  $vcref = qq|<a href=ct.pl?action=edit&db=$form->{vc}&id=$form->{"$form->{vc}_id"}&login=$form->{login}&path=$form->{path} target=_blank>&#8663;</a>|;
+  $vcref = qq|<a href=ct.pl?action=edit&db=$form->{vc}&id=$form->{"$form->{vc}_id"}&login=$form->{login}&path=$form->{path} target=_blank>&#9701;</a>|;
 
   $vc = qq|<input type=hidden name=action value="update">
               <tr>
@@ -457,7 +457,7 @@ sub form_header {
 <form method="post" name="main" action="$form->{script}">
 |;
 
-  $form->hide_form(qw(id type printed emailed queued title vc creditlimit creditremaining business closedto locked shipped oldtransdate oldduedate recurring defaultcurrency oldterms cdt precision order_id reference_rows referenceurl oldwarehouse olddepartment company));
+  $form->hide_form(qw(id type printed emailed queued title vc creditlimit creditremaining business closedto locked shipped oldtransdate oldduedate recurring defaultcurrency oldterms cdt precision order_id reference_rows referenceurl max_upload_size oldwarehouse olddepartment company));
 
   $form->hide_form(map { "select$_" } ("$form->{vc}", "AP", "AP_paid", "AP_discount"));
   $form->hide_form(map { "select$_" } qw(formname currency partsgroup projectnumber department warehouse employee language paymentmethod printer));

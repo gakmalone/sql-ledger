@@ -2530,8 +2530,12 @@ sub defaults {
                 <td><input name=cdt class=checkbox type=checkbox value="1" $checked{cdt}>&nbsp;|.$locale->text('Taxable').qq|</td>
               </tr>
               <tr>
-                <th align=right>|.$locale->text('Reference Documents').qq|</th>
+                <th align=right>|.$locale->text('Reference Documents URL').qq|</th>
                 <td><input name=referenceurl size=60 value="$form->{referenceurl}"></td>
+              </tr>
+              <tr>
+                <th align=right>|.$locale->text('Maximum Upload Size').qq|</th>
+                <td><input name="max_upload_size" class="inputright" size="5" value="$form->{max_upload_size}"> MB</td>
               </tr>
               <tr>
                 <th align=right>|.$locale->text('Precision').qq|</th>
@@ -2732,7 +2736,11 @@ sub defaults {
 </table>
 |;
 
-  $form->{optional} = "company address tel fax companyemail companywebsite yearend weightunit businessnumber closedto revtrans audittrail method cdt namesbynumber typeofcontact roundchange referenceurl annualinterest latepaymentfee restockingcharge checkinventory hideaccounts forcewarehouse publickey";
+  $form->{optional}
+    = 'company address tel fax companyemail companywebsite yearend weightunit businessnumber'
+      . ' closedto revtrans audittrail method cdt namesbynumber typeofcontact roundchange'
+      . ' referenceurl max_upload_size annualinterest latepaymentfee restockingcharge checkinventory'
+      . ' hideaccounts forcewarehouse publickey';
 
   for (qw(gl si so vi batch voucher po sq rfq part project employee customer vendor)) { $form->{optional} .= " ${_}number" }
 
@@ -4363,6 +4371,8 @@ sub company_logo {
 
   $form->{title} = $locale->text('About');
 
+  my ($user, $dbhost, $perl_status);
+
   if ($form->{username}) {
     $user = qq|
   <tr>
@@ -4381,6 +4391,20 @@ sub company_logo {
 |;
   }
 
+  if ($form->{admin}) {
+    my $modules;
+    if (my @missing = $form->load_module($form->perl_modules)) {
+      $modules = $locale->text('Module not installed:') . '<br>' . join '<br>', @missing;
+    } else {
+      $modules = $locale->text('ok');
+    }
+
+    $perl_status = qq|
+  <tr>
+    <th align="right" valign="top">| . $locale->text('Perl Modules') . qq|</th>
+    <td>$modules</td>
+  </tr>|;
+  }
 
   # create the logo screen
   $form->header;
@@ -4414,7 +4438,12 @@ $form->{company}
     <th align=right>|.$locale->text('Dataset').qq|</th>
     <td>$myconfig{dbname}</td>
   </tr>
+  <tr>
+    <th align=right>|.$locale->text('Dataset Size').qq|</th>
+    <td>$form->{dbsize}</td>
+  </tr>
   $dbhost
+  $perl_status
 </table>
 
 </center>

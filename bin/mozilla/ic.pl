@@ -351,7 +351,7 @@ sub form_header {
   $sellprice = qq|
               <tr>
                 <th align="right" nowrap="true">|.$locale->text('Sell Price').qq|</th>
-                <td><input name=sellprice class="inputright" size=11 value=$form->{sellprice}> <a href=ic.pl?action=history&login=$form->{login}&path=$form->{path}&pickvar=sellprice&id=$form->{id} target=popup>&#8663;</a></td>
+                <td><input name=sellprice class="inputright" size=11 value=$form->{sellprice}> <a href=ic.pl?action=history&login=$form->{login}&path=$form->{path}&pickvar=sellprice&id=$form->{id} target=popup>&#9701;</a></td>
               </tr>
 |;
 
@@ -457,7 +457,7 @@ sub form_header {
     }
   }
 
-  $preview = ($form->{image}) ? " <a href=$images/$myconfig{dbname}/$form->{image}> ?" : qq| <a href="ic.pl?action=upload_image&login=$form->{login}&path=$form->{path}" target=popup>&#8663;</a>|;
+  $preview = ($form->{image}) ? " <a href=$images/$myconfig{dbname}/$form->{image}> &#9701;" : qq| <a href="ic.pl?action=upload_image&login=$form->{login}&path=$form->{path}" target=popup>&#9651;</a>|;
 
   $imagelinks = qq|
   <tr>
@@ -720,7 +720,7 @@ sub form_header {
 <form method="post" name="main" action="$form->{script}">
 |;
 
-  $form->hide_form(qw(id item title makemodel alternate oldonhand orphaned taxaccounts rowcount project_id precision changeup oldpartsgroup oldpartsgroupcode helpref reference_rows referenceurl));
+  $form->hide_form(qw(id item title makemodel alternate oldonhand orphaned taxaccounts rowcount project_id precision changeup oldpartsgroup oldpartsgroupcode helpref reference_rows referenceurl max_upload_size));
 
   print qq|
 <input type=hidden name=action value="update">
@@ -850,8 +850,10 @@ sub form_footer {
 
   $form->hide_form(qw(login path callback previousform));
 
-  print qq|
-</form>
+  print q|
+</form>|;
+  &unload;
+  print q|
 
 </body>
 </html>

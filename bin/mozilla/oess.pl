@@ -11,8 +11,7 @@
 #
 #======================================================================
 
-$form->load_module(['Excel::Writer::XLSX', 'SL::Spreadsheet'],
-  $locale->text('Module not installed:'));
+use SL::Spreadsheet;
 
 sub transactions_spreadsheet {
   my ($report_options, $column_index, $header) = @_;
@@ -97,8 +96,8 @@ bin/mozilla/oess.pl - Spreadsheet Functions for orders and quotations
 
 =head1 DESCRIPTION
 
-L<bin::mozilla::ss> contains functions to create and download spreadsheets for
-orders and quotations.
+L<bin::mozilla::oess> contains functions to create and download
+spreadsheets for orders and quotations.
 
 =head1 DEPENDENCIES
 
