@@ -127,7 +127,7 @@ sub new {
 
   $self->{version} = "3.2.12";
   $self->{dbversion} = "3.2.4";
-  $self->{version2} = "tekki 3.2.12.44";
+  $self->{version2} = "tekki 3.2.12.47rc";
   $self->{dbversion2} = 43;
   $self->{cssversion} = 42;
 
@@ -194,7 +194,7 @@ sub dump_form {
 
 
 sub perl_modules {
-  return [qw|Archive::Zip Excel::Writer::XLSX Mojolicious|];
+  return [qw|Archive::Zip Excel::Writer::XLSX Mojolicious Spreadsheet::ParseXLSX|];
 }
 
 
@@ -209,7 +209,7 @@ sub load_module {
   }
 
   if (@missing && $msg) {
-    $self->error($msg . ' ' . join ', ', @missing);
+    $self->error("$msg " . join ', ', @missing);
   } else {
     return @missing;
   }
@@ -856,6 +856,8 @@ sub parse_template {
     if ($out =~ /^\|/) {
       $out =~ s/^\|\s*//;
       $mode = '|-';
+    } else {
+      $out =~ s/^>\s*//;
     }
     open(OUT, "$mode:utf8", $out) or $self->error("$out : $!");
   } else {
