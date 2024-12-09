@@ -1,5 +1,15 @@
 Revision history for SQL-Ledger, starting with version 3.0.0
 
+3.2.12.49 2024-12-07
+  - address field for country now expects a two-letter country code
+  - new fields for street name and building number
+  - new template variables for streetname, buildingnumber, countryname
+  - optional check for correct addresses
+  - duplicate entries for foreign currencies in tax reports removed
+
+3.2.12.48 2024-11-29
+  - button to jump from customers and vendors directly to transaction report
+
 3.2.12.47 2024-11-09
   - hidden order number is deleted when a quotation or rfq is saved a new
   - ct.pl accepts custom scripts
