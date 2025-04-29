@@ -1,5 +1,35 @@
 Revision history for SQL-Ledger, starting with version 3.0.0
 
+3.2.12.55 2025-02-19
+  - payment report no longer contains currencies and fx amounts
+  - JavaScript in GL transaction screen corrected
+  - AR and AP transactions show correct tax rate
+
+3.2.12.54 2025-02-03
+  - new option "Payments" for AR and AP transaction reports
+  - button for order and quotation reports for customers and vendors
+
+3.2.12.53 2025-01-25
+  - new option in transaction reports to display the notes for customers or vendors
+  - warning if payment date is not a working day
+  - new filter for transaction date in all payment reports
+
+3.2.12.52 2025-01-08
+  - XML payment export (pain.001), second part: foreign payments
+  - new development function with timer
+
+3.2.12.51 2024-12-26
+  - XML payment export (pain.001), first part: domestic payments in CHF and EUR
+  - keyboard shortcut to copy localized addresses
+  - error in banks corrected, names are no longer changed to uppercase
+
+3.2.12.50 2024-12-15
+  - new field for own country in system defaults
+  - address validation
+  - new fields for localized postal addresses
+  - variables for QR Bill updated
+  - accesskeys for entries in customer and vendor reports
+
 3.2.12.49 2024-12-07
   - address field for country now expects a two-letter country code
   - new fields for street name and building number

@@ -127,9 +127,9 @@ sub new {
 
   $self->{version} = "3.2.12";
   $self->{dbversion} = "3.2.4";
-  $self->{version2} = "tekki 3.2.12.49";
+  $self->{version2} = "tekki 3.2.12.55";
   $self->{dbversion2} = 49;
-  $self->{cssversion} = 42;
+  $self->{cssversion} = 53;
 
   $self->{favicon} = 'favicon.ico';
 
@@ -190,6 +190,16 @@ sub dump_form {
   print {*STDERR} "$line $filename\n";
 
   print {*STDERR} "  $_: |$self->{$_}|\n" for @dump_fields;
+}
+
+
+sub dump_timer {
+  my ($self) = @_;
+  require Time::HiRes;
+  $self->{_timer} //= [Time::HiRes::gettimeofday()];
+  my ($package, $filename, $line) = caller;
+
+  printf {*STDERR} "%8.3f: $line $filename\n", Time::HiRes::tv_interval($self->{_timer});
 }
 
 
@@ -1965,13 +1975,14 @@ sub qr_variables {
   $self->{qr_company_name} = $self->{company};
   my @address = split "\n", $self->{address};
   $self->{qr_company_address} = $address[0];
-  $address[-1] =~ /((?<country>..)-)?(?<city>.*)/;
-  $self->{qr_company_country} = uc(substr($+{country}, 0, 2)) || 'CH';
+  $address[-1] =~ /(..-)?(?<city>.*)/;
+  $self->{qr_company_country} = $self->{companycountry} || 'CH';
   $self->{qr_company_city}    = $+{city};
 
   $self->{qr_customer_name}
     = $self->{typeofcontact} eq 'company' ? $self->{name} : "$self->{firstname} $self->{lastname}";
-  $self->{qr_customer_address} = $self->{address1};
+  $self->{qr_customer_address} = $self->{streetname}
+    && $self->{buildingnumber} ? "$self->{streetname} $self->{buildingnumber}" : $self->{address1};
   $self->{qr_customer_country} = uc(substr($self->{country}, 0, 2)) || $self->{qr_company_country};
   $self->{qr_customer_city}    = "$self->{zipcode} $self->{city}";
 
@@ -1980,9 +1991,10 @@ sub qr_variables {
     push @fields, "company_$_", "customer_$_";
   }
   for my $field (@fields) {
+    $self->{"qr_$field"} =~ tr/–—/--/;
     $self->{"qr2e_$field"}  = Encode::encode('UTF-8', $self->{"qr_$field"});
     $self->{"qrasc_$field"} = $self->{"qr_$field"}
-      =~ tr/ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ/AAAAAAACEEEEIIIIDNOOOOOxOUUUUYDsaaaaaaaceeeeiiiidnoooooouuuuydy/r;
+      =~ tr/ÀÁÂÃÄÅÆĂÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØȘȚÙÚÛÜÝÞßàáâãäåæăçèéêëìíîïðñòóôõöøșțùúûüýþÿ/AAAAAAAACEEEEIIIIDNOOOOOxOSTUUUUYDsaaaaaaaaceeeeiiiidnoooooostuuuuydy/r;
 
     push @sf, "qr_$field", "qr2e_$field", "qrasc_$field";
   }
@@ -2405,6 +2417,25 @@ sub valid_date {
 
   1;
 
+}
+
+
+sub weekday {
+  my ($self, $myconfig, $date) = @_;
+
+  my $numdate = $self->datetonum($myconfig, $date);
+  $numdate =~ /(\d{4})(\d{2})(\d{2})/;
+
+  my @t = localtime(timelocal(0, 0, 12, $3, $2 - 1, $1));
+
+  return $t[6];
+}
+
+
+sub workingday {
+  my ($self, $myconfig, $date) = @_;
+
+  return !!($self->weekday($myconfig, $date) % 6);
 }
 
 
@@ -5675,6 +5706,10 @@ L<SL::Form> implements the following methods:
 =head2 dump_form
 
   $form->dump_form(@fields);
+
+=head2 dump_timer
+
+  $form->dump_timer(@fields);
 
 =head2 error
 

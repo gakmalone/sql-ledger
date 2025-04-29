@@ -81,6 +81,11 @@ sub create_links {
   for (qw(email phone fax mobile salutation firstname lastname gender contacttitle occupation)) { $form->{$_} = $form->{all_contact}->[0]->{$_} }
   $form->{gender} ||= 'M';
 
+  if ($form->{checkaddress}) {
+    $form->{localaddress}       = SL::ADR::local_address($form);
+    $form->{shiptolocaladdress} = SL::ADR::local_address($form, undef, 'shipto');
+  }
+
   # currencies
   if ($form->{currencies}) {
     for (split /:/, $form->{currencies}) { $form->{selectcurrency} .= "$_\n" }
@@ -1135,7 +1140,12 @@ sub list_names {
         $column_data{$form->{sort}} = "<td>&nbsp;</td>";
       }
 
-      $column_data{name} = "<td><a href=$form->{script}?action=edit&id=$ref->{id}&db=$form->{db}&path=$form->{path}&login=$form->{login}&status=$form->{status}&callback=$callback>$ref->{name}&nbsp;</td>";
+      my $accesskey
+        = $i == @{$form->{CT}} ? qq| accesskey="0" title="[0]"|
+        : $i < 10              ? qq| accesskey="$i" title="[$i]"|
+        :                        '';
+
+      $column_data{name} = "<td><a href=$form->{script}?action=edit&id=$ref->{id}&db=$form->{db}&path=$form->{path}&login=$form->{login}&status=$form->{status}&callback=$callback$accesskey>$ref->{name}&nbsp;</td>";
 
       $email = "";
       if ($form->{sort} =~ /(email|cc)/) {
@@ -1999,6 +2009,15 @@ sub form_header {
 
   }
 
+  my $localaddress;
+  if ($form->{checkaddress}) {
+    $localaddress = qq|
+                <td rowspan="7">
+                  <pre><span id="localaddress">$form->{localaddress}</span></pre>
+                  <span class="clickable" accesskey="Y" title="|.$locale->text('Copy').qq| [Y]" onclick="copyElement(event, 'localaddress')">&#128203</span>
+                </td>|;
+  }
+
   if ($form->{id} && $form->{"lock_$form->{db}number"}) {
     $number = qq|
               <tr>
@@ -2050,7 +2069,7 @@ sub form_header {
 
               <tr>
                 <th align=right nowrap>|.$locale->text('Address').qq|</th>
-                <td><input name=address1 size=35 maxlength=32 value="|.$form->quote($form->{address1}).qq|"></td>
+                <td><input name=address1 size=35 maxlength=32 value="|.$form->quote($form->{address1}).qq|"></td>$localaddress
               </tr>
               <tr>
                 <th align=right nowrap>|.$locale->text('Street').qq|</th>
@@ -2292,8 +2311,12 @@ sub form_footer {
       'Pricelist'      => {ndx => 20, key => 'P', value => $locale->text('Pricelist')},
     },
     {
-      'AR Transactions' => {ndx => 23, key => 'T', value => $locale->text('AR Transactions')},
-      'AP Transactions' => {ndx => 24, key => 'T', value => $locale->text('AP Transactions')},
+      'AR Transactions' => {ndx => 23, key => '1', value => $locale->text('AR Transactions')},
+      'AP Transactions' => {ndx => 24, key => '1', value => $locale->text('AP Transactions')},
+      'Sales Orders'    => {ndx => 25, key => '2', value => $locale->text('Sales Orders')},
+      'Purchase Orders' => {ndx => 26, key => '2', value => $locale->text('Purchase Orders')},
+      'Quotations'      => {ndx => 27, key => '3', value => $locale->text('Quotations')},
+      'RFQs'            => {ndx => 28, key => '3', value => $locale->text('RFQs')},
     },
   );
 
@@ -2340,10 +2363,16 @@ sub form_footer {
       if ($myconfig{acs} !~ /Order Entry--Sales Order/) {
         $f{'Sales Order'} = 1;
       }
+      if ($myconfig{acs} !~ /Order Entry--Reports--Sales Orders/ && $form->{id}) {
+        $f{'Sales Orders'} = 1;
+      }
     }
     if ($myconfig{acs} !~ /Quotations--Quotations/) {
       if ($myconfig{acs} !~ /Quotations--Quotation/) {
         $f{'Quotation'} = 1;
+      }
+      if ($myconfig{acs} !~ /Quotations--Reports--Quotations/ && $form->{id}) {
+        $f{'Quotations'} = 1;
       }
     }
   }
@@ -2384,10 +2413,16 @@ sub form_footer {
       if ($myconfig{acs} !~ /Order Entry--Purchase Order/) {
         $f{'Purchase Order'} = 1;
       }
+      if ($myconfig{acs} !~ /Order Entry--Reports--Purchase Orders/ && $form->{id}) {
+        $f{'Purchase Orders'} = 1;
+      }
     }
     if ($myconfig{acs} !~ /Quotations--Quotations/) {
       if ($myconfig{acs} !~ /Quotations--RFQ/) {
         $f{'RFQ'} = 1;
+      }
+      if ($myconfig{acs} !~ /Quotations--Reports--RFQs/ && $form->{id}) {
+        $f{'RFQs'} = 1;
       }
     }
   }
@@ -2402,11 +2437,12 @@ sub form_footer {
   $form->{action}         = 'update';
   $form->{update_contact} = 1;
   $form->hide_form(
-    'ARAP',     '_updated',     'action',         'addressid',
-    'callback', 'checkaddress', 'company',        'contactid',
-    'db',       'id',           'login',          'max_upload_size',
-    'path',     'precision',    'reference_rows', 'referenceurl',
-    'status',   'taxaccounts',  'update_contact',
+    'ARAP',           '_updated',        'action',             'addressid',
+    'callback',       'checkaddress',    'company',            'companycountry',
+    'contactid',      'db',              'id',                 'localaddress',
+    'login',          'max_upload_size', 'path',               'precision',
+    'reference_rows', 'referenceurl',    'shiptolocaladdress', 'status',
+    'taxaccounts',    'update_contact',
   );
 
   for my $button (@buttons) {
@@ -2449,6 +2485,7 @@ sub form_footer {
 
   print q|
 </form>|;
+  &copy_element if $form->{checkaddress};
   &unload;
   print q|
 
@@ -2486,6 +2523,16 @@ sub shipping_address {
 
   $vcname = $locale->text('Name');
 
+  my $copy = $locale->text('Copy');
+  my $shiptolocaladdress;
+  if ($form->{checkaddress}) {
+    $shiptolocaladdress = qq|
+                <td rowspan="9">
+                  <pre><span id="shiptolocaladdress">$form->{shiptolocaladdress}</span></pre>
+                  <span class="clickable" accesskey="Y" title="$copy [Y]" onclick="copyElement(event, 'shiptolocaladdress')">&#128203</span>
+                </td>|;
+  }
+
   print qq|
 <body>
 
@@ -2500,7 +2547,7 @@ sub shipping_address {
     <td>
       <table width=100%>
         <tr>
-          <th class=listheading colspan=3>$form->{name}</th>
+          <th class=listheading colspan=4>$form->{name}</th>
         </tr>
         <tr>
           <td></td>
@@ -2510,7 +2557,7 @@ sub shipping_address {
         <tr>
           <td></td>
           <th align=right nowrap>$shipto{address1}{label}</th>
-          <td><input name=shiptoaddress1 size=35 maxlength=32 value="|.$form->quote($form->{shiptoaddress1}).qq|"></td>
+          <td><input name=shiptoaddress1 size=35 maxlength=32 value="|.$form->quote($form->{shiptoaddress1}).qq|"></td>$shiptolocaladdress
         </tr>
         <tr>
           <td></td>
@@ -2572,17 +2619,25 @@ sub shipping_address {
   $i = 1;
   for $ref (@{ $form->{all_shipto} }) {
 
+    my $shiptolocaladdress;
+    if ($form->{checkaddress}) {
+      $shiptolocaladdress = qq|
+                  <td rowspan="10">
+                    <pre><span id="shiptolocaladdress_$i">|.SL::ADR::local_address($form, $ref, 'shipto').qq|</span></pre>
+                    <span class="clickable" title="$copy" onclick="copyElement(event, 'shiptolocaladdress_$i')">&#128203</span>
+                  </td>|;
+    }
+
     print qq|
         <tr>
           <td>$select</td>
-          <td><hr noshade></td>
-          <td><hr noshade></td>
+          <td colspan=3><hr noshade></td>
         </tr>
 
         <tr>
           <td><input name="ndx_$i" type=checkbox class=checkbox>
           <th align=right nowrap>$vcname</th>
-          <td>$ref->{shiptoname}</td>
+          <td>$ref->{shiptoname}</td>$shiptolocaladdress
         </tr>
 |;
 
@@ -2626,8 +2681,9 @@ sub shipping_address {
 
 <br>
 <input type=submit class=submit name=action value="|.$locale->text('Continue').qq|" accesskey="C" title="|.$locale->text('Continue').qq| [C]">
-</form>
-
+</form>|;
+  &copy_element if $form->{checkaddress};
+  print qq|
 </body>
 </html>
 |;
@@ -2995,6 +3051,9 @@ sub update {
     my $msg = $locale->text('Invalid country code!');
     for ('', 'bank', 'shipto') {
       SL::ADR::check_country($form, $msg, $_);
+    }
+    for ('', 'shipto') {
+      $form->{"${_}localaddress"} = SL::ADR::local_address($form, undef, $_);
     }
   }
 
@@ -3602,14 +3661,88 @@ sub yes__delete {
 
 
 sub ar_transactions {
-  $form->{script} = "ar.pl";
+
+  $form->{script} = 'ar.pl';
+  %params = (
+    l_datepaid      => 'Y',
+    l_invnumber     => 'Y',
+    l_paid          => 'Y',
+    $form->{db}     => "$name--$form->{id}",
+  );
+
   &_transaction_report;
+
 }
 
 
 sub ap_transactions {
-  $form->{script} = "ap.pl";
+
+  $form->{script} = 'ap.pl';
+  %params = (
+    l_datepaid      => 'Y',
+    l_invnumber     => 'Y',
+    l_paid          => 'Y',
+    $form->{db}     => "$name--$form->{id}",
+  );
+
   &_transaction_report;
+
+}
+
+
+sub sales_orders {
+
+  $form->{script} = 'oe.pl';
+  %params = (
+    l_ordnumber => 'Y',
+    l_reqdate   => 'Y',
+    type        => 'sales_order',
+  );
+
+  &_transaction_report;
+
+}
+
+
+sub purchase_orders {
+
+  $form->{script} = 'oe.pl';
+  %params = (
+    l_ordnumber => 'Y',
+    l_reqdate   => 'Y',
+    type        => 'purchase_order',
+  );
+
+  &_transaction_report;
+
+}
+
+
+sub quotations {
+
+  $form->{script} = 'oe.pl';
+  %params = (
+    l_quonumber => 'Y',
+    l_reqdate   => 'Y',
+    type        => 'sales_quotation',
+  );
+
+  &_transaction_report;
+
+}
+
+
+sub rfqs {
+
+  $form->{script} = 'oe.pl';
+  %params = (
+    l_quonumber => 'Y',
+    l_reqdate   => 'Y',
+    type        => 'request_quotation',
+  );
+
+  &_transaction_report;
+
 }
 
 
@@ -3619,36 +3752,35 @@ sub _transaction_report {
     $form->error($locale->text("Name missing!"));
   }
 
-  $form->{enddate} = "" if $form->{enddate};
-
   CT->save(\%myconfig, \%$form);
 
   $name = $form->escape($form->{name},1);
 
-  my %params = (
-    action        => 'transactions',
-    closed        => 'Y',
-    direction     => 'ASC',
-    l_amount      => 'Y',
-    l_curr        => $form->{selectcurrency} =~ /%0a.+/ ? 'Y' : '',
-    l_datepaid    => 'Y',
-    l_description => 'Y',
-    l_invnumber   => 'Y',
-    l_netamount   => 'Y',
-    l_paid        => 'Y',
-    l_tax         => 'Y',
-    l_transdate   => 'Y',
-    oldsort       => 'transdate',
-    open          => 'Y',
-    sort          => 'transdate',
-    summary       => 1,
-    vc            => $form->{db},
-    $form->{db}   => "$name--$form->{id}",
+  my %global_params = (
+    action          => 'transactions',
+    closed          => 'Y',
+    direction       => 'ASC',
+    l_amount        => 'Y',
+    l_curr          => $form->{selectcurrency} =~ /%0a.+/ ? 'Y' : '',
+    l_description   => 'Y',
+    l_netamount     => 'Y',
+    l_paid          => 'Y',
+    l_runningnumber => 'Y',
+    l_tax           => 'Y',
+    l_transdate     => 'Y',
+    oldsort         => 'transdate',
+    open            => 'Y',
+    sort            => 'transdate',
+    vc              => $form->{db},
+    $form->{db}     => "$name--$form->{id}",
   );
 
   $form->{callback} = "$form->{script}?login=$form->{login}&path=$form->{path}";
   for (keys %params) {
     $form->{callback} .= "&$_=$params{$_}";
+  }
+  for (keys %global_params) {
+    $form->{callback} .= "&$_=$global_params{$_}";
   }
 
   $form->redirect;
