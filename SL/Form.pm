@@ -127,7 +127,7 @@ sub new {
 
   $self->{version} = "3.2.12";
   $self->{dbversion} = "3.2.4";
-  $self->{version2} = "tekki 3.2.12.55";
+  $self->{version2} = "tekki 3.2.12.58";
   $self->{dbversion2} = 49;
   $self->{cssversion} = 53;
 
@@ -204,7 +204,7 @@ sub dump_timer {
 
 
 sub perl_modules {
-  return [qw|Archive::Zip Excel::Writer::XLSX Mojolicious Spreadsheet::ParseXLSX|];
+  return [qw|Archive::Zip Excel::Writer::XLSX Mojolicious Spreadsheet::ParseXLSX Text::QRCode|];
 }
 
 
@@ -1638,7 +1638,7 @@ sub format_line {
     $newstr = "";
 
     %kw = ();
-    if ($var =~ /(align|width|offset|group)\s*?=/) {
+    if ($var =~ /(align|width|offset|group|qrcode)\s*?=/) {
       @kw = split / /, $var;
       $var = $kw[0];
       foreach $item (@kw) {
@@ -1827,6 +1827,17 @@ sub format_line {
           $newstr .= ord;
         }
       }
+    }
+
+    if ($kw{qrcode}) {
+      require SL::QRCode;
+
+      my %params = (height => $kw{qrcode});
+      for my $p (qw|foreground background unit margin level version|) {
+        $params{$p} = $kw{$p} if $kw{$p};
+      }
+
+      $newstr = SL::QRCode::plot_latex($newstr, %params);
     }
 
     s/<%(.+?)%>/$newstr/;
