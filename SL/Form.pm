@@ -127,7 +127,7 @@ sub new {
 
   $self->{version} = "3.2.12";
   $self->{dbversion} = "3.2.4";
-  $self->{version2} = "tekki 3.2.12.58";
+  $self->{version2} = "tekki 3.2.12.59";
   $self->{dbversion2} = 49;
   $self->{cssversion} = 53;
 
@@ -204,7 +204,7 @@ sub dump_timer {
 
 
 sub perl_modules {
-  return [qw|Archive::Zip Excel::Writer::XLSX Mojolicious Spreadsheet::ParseXLSX Text::QRCode|];
+  return [qw|Archive::Zip Excel::Writer::XLSX Image::Magick Imager::zxing Mojolicious Spreadsheet::ParseXLSX Text::QRCode|];
 }
 
 
