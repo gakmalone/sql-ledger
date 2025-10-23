@@ -489,7 +489,7 @@ sub process_query {
 
   return unless (-f $filename);
 
-  open(FH, "$filename") or $form->error("$filename : $!\n");
+  open(FH, '<:encoding(UTF-8)', "$filename") or $form->error("$filename : $!\n");
   my $query = "";
   my $loop = 0;
   my $i;
@@ -657,9 +657,9 @@ sub dbpassword {
   my $query;
 
   if ($form->{new_password}) {
-    $query = qq|ALTER ROLE '$form->{dbuser}' WITH PASSWORD '$form->{new_password}'|;
+    $query = qq|ALTER ROLE "$form->{dbuser}" WITH PASSWORD '$form->{new_password}'|;
   } else {
-    $query = qq|ALTER ROLE '$form->{dbuser}' WITH PASSWORD NULL|;
+    $query = qq|ALTER ROLE "$form->{dbuser}" WITH PASSWORD NULL|;
   }
 
   $dbh->do($query) or $form->dberror($query);

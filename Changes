@@ -1,5 +1,28 @@
 Revision history for SQL-Ledger, starting with version 3.0.0
 
+3.2.12.63 2025-10-14
+  - info for recurring GL transactions shows number of created transaction
+  - templates created with distribute.pl are locked in the user interface
+  - type of entries found in UID Register is set to company
+  - database port for new users corrected
+
+3.2.12.62 2025-09-20
+  - new Hungarian translation
+    contributed by György Tóth-Szabó
+  - customers and vendors in Switzerland can be updated with data from UID Register
+  - payments in foreign currencies use exchange rate of transaction as default
+  - script that generates and distributes templates for multiple datasets
+  - encoding of parsed SQL files corrected
+
+3.2.12.61 2025-09-10
+  - query to change database password corrected
+
+3.2.12.60 2025-09-05
+  - files printed to queue have invoice, order, quotation number in file name
+  - description of invoices added to reconciliation screen
+  - Docker files upgraded to Debian Trixie
+  - registration of recently used timecards corrected
+
 3.2.12.59 2025-06-17
   - import for QR Bills into AP transactions and vendor invoices
   - XML payment export warns if required values are missing

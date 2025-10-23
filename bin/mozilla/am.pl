@@ -2044,7 +2044,17 @@ sub list_templates {
   <tr>
     <th class=listtop>$form->{helpref}$form->{title}</a></th>
   </tr>
-  <tr height="5"></tr>
+  <tr height="5"></tr>|;
+
+  if (-f "$templates/$myconfig{templates}/managed.LCK") {
+    print qq|
+  <tr>
+   <td>|.$locale->text('Templates managed externally').qq|</td>
+  </tr>
+|;
+  }
+
+  print qq|
   <tr>
     <td>
       <table width=100%>
@@ -2190,8 +2200,16 @@ $form->{body}
   $form->hide_form(qw(file type path login callback));
 
   print qq|
-<p>
+<hr size="3" noshade>
+<br>|;
+
+  if (-f "$templates/$myconfig{templates}/managed.LCK") {
+    print $locale->text('Templates managed externally');
+  } else {
+    print qq|
 <input name=action type=submit class=submit value="|.$locale->text('Edit').qq|">| if $form->{edit};
+  }
+
 
   print qq|
 </form>
@@ -2247,6 +2265,7 @@ $form->{body}</textarea>
   </tr>
 </table>
 
+<hr size="3" noshade>
 <br>
 <input type=submit class=submit name=action value="|.$locale->text('Save').qq|">
 |;
@@ -2466,7 +2485,7 @@ sub defaults {
   $checked{person} = "checked" if $form->{typeofcontact} eq 'person';
   $roundchange{$form->{roundchange}} = "checked";
 
-  for (qw(cdt checkinventory hideaccounts forcewarehouse checkaddress)) {
+  for (qw(cdt checkinventory hideaccounts forcewarehouse checkaddress uidaddress)) {
     $checked{$_} = "checked" if $form->{$_};
   }
 
@@ -2587,8 +2606,12 @@ sub defaults {
                 </td>
               </tr>
               <tr>
-                <th align=right>|.$locale->text('Check Addresses').qq|</th>
+                <th align=right>|.$locale->text('Localized Addresses').qq|</th>
                 <td><input name=checkaddress class=checkbox type=checkbox value=1 $checked{checkaddress}></td>
+              </tr>
+              <tr>
+                <th align=right>|.$locale->text('Addresses from UID Register').qq|</th>
+                <td><input name=uidaddress class=checkbox type=checkbox value=1 $checked{uidaddress}></td>
               </tr>
               <tr>
                 <th align=right>|.$locale->text('Check Inventory').qq|</th>
@@ -2755,7 +2778,8 @@ sub defaults {
     'fax',             'forcewarehouse',   'hideaccounts',   'latepaymentfee',
     'max_upload_size', 'method',           'namesbynumber',  'publickey',
     'referenceurl',    'restockingcharge', 'revtrans',       'roundchange',
-    'tel',             'typeofcontact',    'weightunit',     'yearend',
+    'tel',             'typeofcontact',    'uidaddress',     'weightunit',
+    'yearend',
     );
 
   for (qw(gl si so vi batch voucher po sq rfq part project employee customer vendor)) {
@@ -5026,6 +5050,8 @@ sub process_transactions {
         $form->{reference} = $pt->{reference};
         $form->{description} = $pt->{description};
         $form->{transdate} = $pt->{nextdate};
+
+        $form->{reference} = $form->update_defaults(\%myconfig, 'glnumber') unless $form->{reference};
 
         $form->{defaultcurrency} = substr($form->{currencies},0,3);
 
