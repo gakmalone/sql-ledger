@@ -1,5 +1,15 @@
 Revision history for SQL-Ledger, starting with version 3.0.0
 
+3.2.12.65 2025-11-14
+  - buttons in customer and vendor export changed to produce correct translations
+  - link for exchange rates from Swiss Federal Office for Customs and Border updated
+  - login to database of the next version is possible
+
+3.2.12.64 2025-11-07
+  - import is able to load custom scripts
+  - variables for QR Bills adapted to structured addresses (needs updated templates)
+  - BREAKING CHANGE: branch with DWS code renamed from master to dws
+
 3.2.12.63 2025-10-14
   - info for recurring GL transactions shows number of created transaction
   - templates created with distribute.pl are locked in the user interface
